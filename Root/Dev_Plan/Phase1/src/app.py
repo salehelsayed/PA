@@ -11,6 +11,7 @@ def create_app(config_class=Config):
     """Create and configure the Flask app."""
     app = Flask(__name__)
     app.config.from_object(config_class)
+    app.secret_key = 'your_secret_key_here'
 
     # Configure logging
     logging.basicConfig(level=logging.INFO)

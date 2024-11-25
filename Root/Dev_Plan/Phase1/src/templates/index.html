@@ -1,40 +1,45 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">AI Assistant</div>
+    </div>
 
-{% block title %}Chat - AI Assistant{% endblock %}
-
-{% block body %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-        <a class="navbar-brand" href="#">AI Assistant</a>
-    </div>
-</nav>
-
-<!-- Flex Container for Chat and Input -->
-<div class="container mt-4 d-flex flex-column" style="height: 80vh;">
-    <div class="chat-container flex-grow-1 d-flex flex-column-reverse" id="chat-container">
-        <!-- Messages will be added here dynamically -->
-    </div>
-</div>
-
-<div id="input-container" class="container">
-    <form id="chat-form" class="row g-3">
-        <div class="col-10">
-            <input type="text" class="form-control" id="user-input" placeholder="Type your message..." autocomplete="off" required>
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h5>Directory</h5>
+                <input type="file" id="directory-input" webkitdirectory multiple style="display: none;">
+                <button id="browse-button" class="button">Load Directory</button>
+            </div>
+            <div id="directory-tree" class="directory-tree">
+                <!-- Directory tree will be populated here -->
+            </div>
         </div>
-        <div class="col-2">
-            <button type="submit" class="btn btn-primary w-100">Send</button>
-        </div>
-    </form>
-</div>
-{% endblock %}
 
-{% block scripts %}
-<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
-<script>
-    // Ensure chat.js is loaded after the DOM
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize chat functionality from chat.js
-        initializeChat();
-    });
-</script>
-{% endblock %}
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="chat-container" id="chat-container">
+                <!-- Messages will be added here dynamically -->
+            </div>
+            <div class="input-area">
+                <form id="chat-form">
+                    <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off" required>
+                    <button type="submit" class="button">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/directory.js') }}"></script>
+</body>
+</html>

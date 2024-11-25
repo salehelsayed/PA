@@ -1,12 +1,109 @@
-.chat-container {
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
     display: flex;
-    flex-direction: column-reverse;
-    flex-grow: 1;
-    overflow-y: auto;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.navbar {
+    background-color: #007bff;
+    color: #fff;
     padding: 10px;
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 5px;
+}
+
+.container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #f7f7f7;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+.directory-tree {
+    padding: 10px;
+    font-size: 14px;
+}
+
+.directory-item {
+    cursor: pointer;
+    padding: 5px 0;
+    display: flex;
+    align-items: center;
+}
+
+.directory-item:hover {
+    background-color: #eaeaea;
+}
+
+.directory-item .icon {
+    margin-right: 8px;
+}
+
+.children-container {
+    margin-left: 20px;
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-container {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    background-color: #e9ecef;
+}
+
+.input-area {
+    padding: 10px;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+}
+
+#chat-form {
+    display: flex;
+}
+
+#user-input {
+    flex: 1;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#chat-form .button {
+    margin-left: 10px;
 }
 
 .message {
@@ -33,4 +130,44 @@
 
 .message-content {
     word-wrap: break-word;
+}
+
+/* Directory Tree Styles similar to GitHub */
+.directory-item .directory-header,
+.directory-item .file-item {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+}
+
+.directory-item .directory-header:hover,
+.directory-item .file-item:hover {
+    background-color: #f6f8fa; /* Light gray background on hover */
+    cursor: pointer;
+}
+
+.directory-item i {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.children-container {
+    margin-left: 20px;
+}
+
+.directory-name {
+    font-weight: 600;
+}
+
+.file-name {
+    font-weight: 400;
+}
+
+/* Adjust icon colors */
+.directory-header i {
+    color: #54aeff; /* Blue color for folder icons */
+}
+
+.file-item i {
+    color: #6a737d; /* Gray color for file icons */
 }

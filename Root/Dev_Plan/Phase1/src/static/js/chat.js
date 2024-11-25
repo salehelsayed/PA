@@ -1,4 +1,4 @@
-function initializeChat() {
+document.addEventListener('DOMContentLoaded', function() {
     const chatContainer = document.getElementById('chat-container');
     const chatForm = document.getElementById('chat-form');
     const userInput = document.getElementById('user-input');
@@ -19,8 +19,7 @@ function initializeChat() {
     // Function to add a message to the chat container
     const addMessage = (message, sender) => {
         const messageElement = createMessageElement(message, sender);
-        // Prepend the message to the container (due to flex-column-reverse)
-        chatContainer.prepend(messageElement);
+        chatContainer.appendChild(messageElement);
         scrollToBottom();
     };
 
@@ -63,4 +62,4 @@ function initializeChat() {
 
     // Initial scroll to bottom on load
     scrollToBottom();
-} 
+}); 

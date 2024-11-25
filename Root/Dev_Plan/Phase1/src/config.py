@@ -2,7 +2,7 @@ import os
 
 class Config:
     """Base configuration."""
-    SECRET_KEY = os.getenv('FLASK_SECRET_KEY', 'dev')
+    SECRET_KEY = os.getenv('FLASK_SECRET_KEY', 'your_secret_key_here')
     OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
     # Add other configuration variables here
 
