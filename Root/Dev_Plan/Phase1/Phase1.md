@@ -57,3 +57,21 @@ Security Features:
 API key stored in .env file (not in code)
 Input validation
 Error handling for failed API calls
+
+# The enhanced version now includes:
+
+System Message:
+A predefined SYSTEM_MESSAGE that guides the AI's behavior
+Sets expectations for response format and style
+Conversation History:
+Uses Flask sessions to maintain conversation history
+Each conversation starts with the system message
+Keeps track of both user inputs and AI responses
+Context Management:
+Maintains the last 10 messages to keep the context window manageable
+Includes the full conversation history in each API call
+Preserves conversation flow and context between messages
+Session Management:
+Uses Flask's session to persist conversation history
+Initializes new conversations with the system message
+Manages conversation state per user
