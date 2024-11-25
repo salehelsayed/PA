@@ -3,6 +3,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatForm = document.getElementById('chat-form');
     const userInput = document.getElementById('user-input');
 
+    // Handle Enter key press
+    userInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            chatForm.dispatchEvent(new Event('submit'));
+        }
+    });
+
     // Function to create a message element
     const createMessageElement = (message, sender) => {
         const messageWrapper = document.createElement('div');
@@ -10,7 +18,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const messageContent = document.createElement('div');
         messageContent.classList.add('message-content');
-        messageContent.textContent = message;
+
+        if (sender === 'ai') {
+            // Parse Markdown and set as HTML
+            messageContent.innerHTML = marked.parse(message);
+        } else {
+            // Escape any HTML in user's message
+            messageContent.textContent = message;
+        }
 
         messageWrapper.appendChild(messageContent);
         return messageWrapper;

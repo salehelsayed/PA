@@ -3,14 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const browseButton = document.getElementById('browse-button');
     const directoryInput = document.getElementById('directory-input');
 
-    // Load directory structure from localStorage if available
-    const storedDirectoryData = localStorage.getItem('directoryData');
-    if (storedDirectoryData) {
-        const directoryData = JSON.parse(storedDirectoryData);
-        buildDirectoryTree(directoryData, directoryTree);
-    }
-
-    // Set up event listener for the "Load Directory" button
+    // Event listener for the "Load Directory" button
     browseButton.addEventListener('click', () => {
         directoryInput.click();
     });
@@ -19,17 +12,30 @@ document.addEventListener('DOMContentLoaded', function() {
         const files = event.target.files;
         const directoryData = [];
 
-        [...files].forEach(file => {
-            const path = file.webkitRelativePath || file.relativePath || file.name;
+        // Convert FileList to array and sort it
+        const sortedFiles = Array.from(files).sort((a, b) => {
+            // Directories come first
+            const aIsDir = a.webkitRelativePath.split('/').length > 2;
+            const bIsDir = b.webkitRelativePath.split('/').length > 2;
+            if (aIsDir && !bIsDir) return -1;
+            if (!aIsDir && bIsDir) return 1;
+            return a.webkitRelativePath.localeCompare(b.webkitRelativePath);
+        });
+
+        // Build directory structure
+        sortedFiles.forEach(file => {
+            const path = file.webkitRelativePath;
             const parts = path.split('/');
             let currentLevel = directoryData;
 
             parts.forEach((part, index) => {
+                if (index === 0) return; // Skip the root folder name
+
                 let existingPath = currentLevel.find(item => item.name === part);
                 if (!existingPath) {
                     existingPath = {
                         name: part,
-                        type: (index === parts.length - 1 && file.type) ? 'file' : 'directory',
+                        type: index === parts.length - 1 ? 'file' : 'directory',
                         children: []
                     };
                     currentLevel.push(existingPath);
@@ -38,55 +44,62 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        // Store directory data in localStorage
-        localStorage.setItem('directoryData', JSON.stringify(directoryData));
-
         // Clear existing directory tree
         directoryTree.innerHTML = '';
         // Build the directory tree
         buildDirectoryTree(directoryData, directoryTree);
     });
 
-    // Function to build the directory tree recursively
     function buildDirectoryTree(nodes, parentElement) {
         nodes.forEach(node => {
             const item = document.createElement('div');
             item.classList.add('directory-item');
 
             if (node.type === 'directory') {
-                item.innerHTML = `
-                    <div class="directory-header">
+                const header = document.createElement('div');
+                header.classList.add('directory-header');
+                header.innerHTML = `
+                    <div class="directory-icon">
+                        <i class="fas fa-chevron-right"></i>
                         <i class="fas fa-folder"></i>
-                        <span class="directory-name">${node.name}</span>
                     </div>
+                    <span class="directory-name">${node.name}</span>
                 `;
-                parentElement.appendChild(item);
+                item.appendChild(header);
 
                 const childrenContainer = document.createElement('div');
                 childrenContainer.classList.add('children-container');
                 childrenContainer.style.display = 'none';
-                parentElement.appendChild(childrenContainer);
+                item.appendChild(childrenContainer);
 
-                item.querySelector('.directory-header').addEventListener('click', (e) => {
+                header.addEventListener('click', (e) => {
                     e.stopPropagation();
+                    const chevron = header.querySelector('.fa-chevron-right');
+                    const folder = header.querySelector('.fa-folder');
+                    
                     if (childrenContainer.style.display === 'none') {
                         childrenContainer.style.display = 'block';
+                        chevron.style.transform = 'rotate(90deg)';
+                        folder.classList.replace('fa-folder', 'fa-folder-open');
                     } else {
                         childrenContainer.style.display = 'none';
+                        chevron.style.transform = 'rotate(0deg)';
+                        folder.classList.replace('fa-folder-open', 'fa-folder');
                     }
                 });
 
                 buildDirectoryTree(node.children, childrenContainer);
-
-            } else if (node.type === 'file') {
+            } else {
                 item.innerHTML = `
                     <div class="file-item">
-                        <i class="fas fa-file"></i>
+                        <div class="file-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
                         <span class="file-name">${node.name}</span>
                     </div>
                 `;
-                parentElement.appendChild(item);
             }
+            parentElement.appendChild(item);
         });
     }
 }); 
