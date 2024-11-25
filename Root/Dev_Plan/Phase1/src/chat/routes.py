@@ -53,51 +53,11 @@ def chat():
         current_app.logger.error(f"Unexpected error: {e}")
         return jsonify({'error': 'An unexpected error occurred.'}), 500
 
-@chat_bp.route('/api/directory', methods=['POST'])
-def get_directory():
-    data = request.json
-    selected_directory = data.get('directory_path')
-
-    allowed_base_directory = '/path/to/allowed/base/directory'  # Set to the allowed base path
-
-    if selected_directory:
-        # Resolve the absolute path
-        absolute_path = os.path.abspath(selected_directory)
-        # Check if the selected directory is within the allowed base directory
-        if os.path.commonpath([absolute_path, allowed_base_directory]) != allowed_base_directory:
-            return jsonify({'error': 'Access to the specified directory is not allowed.'}), 403
-        # Store the selected directory in the session
-        session['selected_directory'] = absolute_path
-
-    base_directory = session.get('selected_directory')
-
-    if not base_directory or not os.path.exists(base_directory):
-        return jsonify({'error': 'Directory not found.'}), 400
-
-    def get_directory_structure(path):
-        structure = []
-        try:
-            with os.scandir(path) as it:
-                for entry in it:
-                    if entry.name.startswith('.'):
-                        continue  # Skip hidden files and directories
-                    if entry.is_dir(follow_symlinks=False):
-                        structure.append({
-                            'type': 'directory',
-                            'name': entry.name,
-                            'children': get_directory_structure(os.path.join(path, entry.name))
-                        })
-                    else:
-                        structure.append({
-                            'type': 'file',
-                            'name': entry.name
-                        })
-            return structure
-        except PermissionError:
-            return []
-
-    directory_structure = get_directory_structure(base_directory)
-    return jsonify(directory_structure)
+# Comment out or remove the /api/directory endpoint if not needed
+# @chat_bp.route('/api/directory', methods=['POST'])
+# def get_directory():
+#     # Endpoint no longer needed for client-side directory loading
+#     pass
 
 @chat_bp.route('/api/file', methods=['GET'])
 def read_file():
@@ -110,15 +70,19 @@ def read_file():
     # Resolve the absolute path
     absolute_path = os.path.abspath(os.path.join(base_directory, file_path))
 
-    # Security check
-    if os.path.commonpath([absolute_path, base_directory]) != base_directory:
+    # Security check to prevent access outside the base directory
+    if not absolute_path.startswith(base_directory):
         return jsonify({'error': 'Access to the specified file is not allowed.'}), 403
 
     if not os.path.exists(absolute_path):
         return jsonify({'error': 'File not found.'}), 404
 
-    with open(absolute_path, 'r') as file:
-        content = file.read()
+    try:
+        with open(absolute_path, 'r', encoding='utf-8') as file:
+            content = file.read()
+    except Exception as e:
+        current_app.logger.error(f"Error reading file {absolute_path}: {e}")
+        return jsonify({'error': 'An error occurred while reading the file.'}), 500
 
     return jsonify({'content': content})
 

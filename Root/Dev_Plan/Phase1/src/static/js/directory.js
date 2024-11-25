@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const browseButton = document.getElementById('browse-button');
     const directoryInput = document.getElementById('directory-input');
 
+    // Map to store file paths to file objects
+    const fileMap = {};
+
     // Event listener for the "Load Directory" button
     browseButton.addEventListener('click', () => {
         directoryInput.click();
@@ -22,9 +25,11 @@ document.addEventListener('DOMContentLoaded', function() {
             return a.webkitRelativePath.localeCompare(b.webkitRelativePath);
         });
 
-        // Build directory structure
+        // Build directory structure and populate fileMap
         sortedFiles.forEach(file => {
             const path = file.webkitRelativePath;
+            fileMap[path] = file; // Store the file object in the map
+
             const parts = path.split('/');
             let currentLevel = directoryData;
 
@@ -36,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     existingPath = {
                         name: part,
                         type: index === parts.length - 1 ? 'file' : 'directory',
+                        path: path,
                         children: []
                     };
                     currentLevel.push(existingPath);
@@ -90,16 +96,55 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 buildDirectoryTree(node.children, childrenContainer);
             } else {
-                item.innerHTML = `
-                    <div class="file-item">
-                        <div class="file-icon">
-                            <i class="fas fa-file-alt"></i>
-                        </div>
-                        <span class="file-name">${node.name}</span>
+                const fileItem = document.createElement('div');
+                fileItem.classList.add('file-item');
+                fileItem.innerHTML = `
+                    <div class="file-icon">
+                        <i class="fas fa-file-alt"></i>
                     </div>
+                    <span class="file-name">${node.name}</span>
                 `;
+                fileItem.addEventListener('click', () => {
+                    viewFileContent(node.path);
+                });
+                item.appendChild(fileItem);
             }
             parentElement.appendChild(item);
         });
     }
+
+    function viewFileContent(filePath) {
+        const file = findFileByPath(filePath);
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const content = event.target.result;
+                displayFileContent(content, file.name);
+            };
+            reader.readAsText(file);
+        } else {
+            alert('File not found.');
+        }
+    }
+
+    // Implement the findFileByPath function
+    function findFileByPath(filePath) {
+        return fileMap[filePath];
+    }
+
+    function displayFileContent(content, fileName) {
+        document.getElementById('chat-view').style.display = 'none';
+        document.getElementById('file-view').style.display = 'block';
+
+        document.getElementById('file-name').textContent = fileName;
+
+        const fileContentElement = document.getElementById('file-content');
+        fileContentElement.innerHTML = marked.parse(content);
+    }
+
+    document.getElementById('back-to-chat').addEventListener('click', () => {
+        document.getElementById('chat-view').style.display = 'block';
+        document.getElementById('file-view').style.display = 'none';
+    });
 }); 

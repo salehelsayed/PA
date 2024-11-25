@@ -7,15 +7,22 @@
 
         <!-- Chat Window -->
         <div class="chat-window">
-            <!-- Include Header Component -->
-            {% include 'components/header.html' %}
+            <!-- Chat View -->
+            <div id="chat-view">
+                <!-- Chat Area -->
+                {% include 'components/chat_area.html' %}
 
-            <!-- Include Chat Area Component -->
-            {% include 'components/chat_area.html' %}
-
-            <!-- Include Input Section Component -->
-            {% include 'components/input_section.html' %}
+                <!-- Input Section -->
+                {% include 'components/input_section.html' %}
+            </div>
+            <!-- File View -->
+            <div id="file-view" style="display: none;">
+                {% include 'components/file_view.html' %}
+            </div>
         </div>
+
+        <!-- Hidden File Input -->
+        <input type="file" id="directory-input" webkitdirectory multiple style="display: none;">
     </div>
 {% endblock %}
 
