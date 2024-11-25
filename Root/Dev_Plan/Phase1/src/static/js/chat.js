@@ -77,4 +77,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial scroll to bottom on load
     scrollToBottom();
+
+    // Function to reset the chat area
+    function resetChat(event) {
+        event.preventDefault();
+        chatContainer.innerHTML = '';
+    }
 }); 

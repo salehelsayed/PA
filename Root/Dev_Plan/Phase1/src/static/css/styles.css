@@ -37,7 +37,8 @@ body {
     border-bottom: 1px solid #eaeaea;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    padding: 0 20px;
     font-size: 18px;
     font-weight: 600;
     position: sticky;
@@ -260,4 +261,28 @@ body {
     margin-left: 16px;
     border-left: 1px solid #e1e4e8;
     padding-left: 8px;
+}
+
+.header-button {
+    padding: 5px 12px;
+    font-size: 14px;
+    background-color: #f6f8fa;
+    border: 1px solid rgba(27,31,36,0.15);
+    border-radius: 6px;
+    color: #24292e;
+    text-decoration: none;
+}
+
+.header-button:hover {
+    background-color: #f3f4f6;
+}
+
+.header-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #24292e;
+}
+
+#home-button {
+    /* Any specific styles for the home button */
 }

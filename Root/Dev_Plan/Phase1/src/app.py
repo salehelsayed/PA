@@ -34,6 +34,11 @@ def create_app(config_class=Config):
     def home():
         return render_template('index.html')
 
+    # Remove or comment out the test route
+    # @app.route('/test')
+    # def test_page():
+    #     return render_template('test.html')
+
     return app
 
 if __name__ == '__main__':
