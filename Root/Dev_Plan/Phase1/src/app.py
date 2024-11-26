@@ -8,10 +8,21 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def create_app(config_class=Config):
-    """Create and configure the Flask app."""
+    """Create and configure the Flask application.
+
+    This function initializes the Flask app with the specified configuration,
+    sets up logging, registers blueprints, and defines error handlers.
+
+    Args:
+        config_class: The configuration class to use for the app.
+
+    Returns:
+        A configured Flask application instance.
+    """
     app = Flask(__name__)
     app.config.from_object(config_class)
-    app.secret_key = 'your_secret_key_here'
+    # Note: Ensure that the secret key is securely generated and kept secret in production.
+    app.secret_key = 'your_secret_key_here'  # TODO: Replace with a secure key for production
 
     # Configure logging
     logging.basicConfig(level=logging.INFO)
@@ -24,6 +35,16 @@ def create_app(config_class=Config):
     # Error handler should be registered after app creation
     @app.errorhandler(Exception)
     def handle_exception(e):
+        """Handle uncaught exceptions and return a JSON error response.
+
+        This ensures that the client receives a consistent error structure.
+
+        Args:
+            e: The exception that was raised.
+
+        Returns:
+            A tuple containing the JSON error response and the HTTP status code.
+        """
         app.logger.error(f"Unhandled exception: {e}")
         response = {
             "error": "An internal error occurred."
@@ -32,15 +53,16 @@ def create_app(config_class=Config):
 
     @app.route('/')
     def home():
+        """Render the home page of the application."""
         return render_template('index.html')
 
-    # Remove or comment out the test route
-    # @app.route('/test')
-    # def test_page():
-    #     return render_template('test.html')
+    # The '/test' route has been removed as it's no longer needed.
+    # If you need to add new routes, ensure they do not conflict with existing ones.
 
     return app
 
 if __name__ == '__main__':
+    # Run the app only if this file is executed directly.
+    # In production, use a WSGI server like Gunicorn or uWSGI.
     app = create_app()
     app.run(debug=True, port=5001)

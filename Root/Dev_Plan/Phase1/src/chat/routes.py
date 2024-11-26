@@ -20,6 +20,13 @@ client = openai.Client(api_key=openai_api_key)
 
 @chat_bp.route('/chat', methods=['POST'])
 def chat():
+    """Handle chat messages from the user.
+
+    Expects a JSON payload with the user's message and returns the AI assistant's response.
+
+    Returns:
+        A JSON response containing the AI's reply or an error message.
+    """
     user_message = request.json.get('message')
     if not user_message:
         return jsonify({'error': 'No message provided.'}), 400
@@ -35,7 +42,7 @@ def chat():
             "temperature": 0.7
         }
 
-        # Call the Chat Completion API using the new client
+        # Call the Chat Completion API using the OpenAI client
         completion = client.chat.completions.create(**params)
 
         # Extract the assistant's reply
@@ -53,14 +60,15 @@ def chat():
         current_app.logger.error(f"Unexpected error: {e}")
         return jsonify({'error': 'An unexpected error occurred.'}), 500
 
-# Comment out or remove the /api/directory endpoint if not needed
-# @chat_bp.route('/api/directory', methods=['POST'])
-# def get_directory():
-#     # Endpoint no longer needed for client-side directory loading
-#     pass
-
 @chat_bp.route('/api/file', methods=['GET'])
 def read_file():
+    """Read and return the content of a specified file.
+
+    The file path is provided as a query parameter. Access is restricted to the selected directory.
+
+    Returns:
+        A JSON response containing the file content or an error message.
+    """
     file_path = request.args.get('file_path')
     base_directory = session.get('selected_directory')
 
@@ -78,6 +86,7 @@ def read_file():
         return jsonify({'error': 'File not found.'}), 404
 
     try:
+        # Read the file content
         with open(absolute_path, 'r', encoding='utf-8') as file:
             content = file.read()
     except Exception as e:
@@ -86,7 +95,5 @@ def read_file():
 
     return jsonify({'content': content})
 
-# @chat_bp.route('/browse', methods=['GET'])
-# def browse():
-#     # This route is no longer needed
-#     pass 
+# Note: The '/api/directory' and '/browse' routes have been removed or commented out.
+# If directory browsing functionality is needed, ensure proper security measures are in place.

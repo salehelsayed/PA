@@ -7,6 +7,7 @@
 
         <!-- Chat Window -->
         <div class="chat-window">
+            <!-- Header Component -->
             {% include 'header.html' %}
             
             <!-- Chat View -->
@@ -17,13 +18,14 @@
                 <!-- Input Section -->
                 {% include 'components/input_section.html' %}
             </div>
-            <!-- File View -->
+
+            <!-- File View (hidden by default) -->
             <div id="file-view" style="display: none;">
                 {% include 'components/file_view.html' %}
             </div>
         </div>
 
-        <!-- Hidden File Input -->
+        <!-- Hidden File Input for Directory Upload -->
         <input type="file" id="directory-input" webkitdirectory multiple style="display: none;">
     </div>
 {% endblock %}
@@ -32,10 +34,11 @@
     <!-- Include Font Awesome for icons -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js"></script>
 
-    <!-- Include the Marked.js library -->
+    <!-- Include the Marked.js library for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-    <!-- Your custom scripts -->
+    <!-- Custom JavaScript files; DO NOT CHANGE THE ORDER -->
+    <!-- Changing the script order may cause dependencies to break -->
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
     <script src="{{ url_for('static', filename='js/directory.js') }}"></script>
 {% endblock %}
