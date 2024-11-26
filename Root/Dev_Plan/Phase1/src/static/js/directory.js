@@ -134,17 +134,58 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function displayFileContent(content, fileName) {
-        document.getElementById('chat-view').style.display = 'none';
-        document.getElementById('file-view').style.display = 'block';
-
-        document.getElementById('file-name').textContent = fileName;
-
+        const chatView = document.getElementById('chat-view');
+        const fileView = document.getElementById('file-view');
+        const appTitle = document.getElementById('app-title');
+        const fileNameElement = document.getElementById('file-name');
+        
+        // Update display properties
+        chatView.style.display = 'none';
+        fileView.style.display = 'flex';
+        appTitle.style.display = 'none';
+        
+        // Update and show the file name in header
+        fileNameElement.textContent = fileName;
+        fileNameElement.style.display = 'block';
+        
         const fileContentElement = document.getElementById('file-content');
-        fileContentElement.innerHTML = marked.parse(content);
+        if (fileContentElement) {
+            fileContentElement.innerHTML = '';  // Clear existing content
+            
+            // If it's a markdown file, render it using marked
+            if (fileName.toLowerCase().endsWith('.md')) {
+                fileContentElement.innerHTML = marked.parse(content);
+            } else {
+                // For other files, display as plain text in a pre tag
+                const pre = document.createElement('pre');
+                pre.textContent = content;
+                fileContentElement.appendChild(pre);
+            }
+        }
     }
 
-    document.getElementById('back-to-chat').addEventListener('click', () => {
-        document.getElementById('chat-view').style.display = 'block';
-        document.getElementById('file-view').style.display = 'none';
-    });
+    function restoreChatView() {
+        // Show chat elements
+        const chatView = document.getElementById('chat-view');
+        const fileView = document.getElementById('file-view');
+        const appTitle = document.getElementById('app-title');
+        const fileName = document.getElementById('file-name');
+        
+        // Ensure proper display and layout
+        chatView.style.display = 'flex';
+        appTitle.style.display = 'block';
+        
+        // Hide file elements
+        fileView.style.display = 'none';
+        fileName.style.display = 'none';
+        
+        // Clear file content to prevent memory issues
+        const fileContentElement = document.getElementById('file-content');
+        if (fileContentElement) {
+            fileContentElement.innerHTML = '';
+        }
+    }
+
+    // Handle back to chat button click
+    document.getElementById('back-to-chat-btn').addEventListener('click', restoreChatView);
 }); 
