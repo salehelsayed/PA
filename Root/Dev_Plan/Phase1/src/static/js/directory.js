@@ -200,13 +200,25 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const fileContentElement = document.getElementById('file-content');
         if (fileContentElement) {
-            fileContentElement.innerHTML = '';  // Clear existing content
+            fileContentElement.innerHTML = '';
             
-            // If it's a markdown file, render it using marked.js
             if (fileName.toLowerCase().endsWith('.md')) {
+                // Add the markdown-body class to the container
+                fileContentElement.classList.add('markdown-body');
+                // Configure marked options for GitHub-like rendering
+                marked.setOptions({
+                    gfm: true, // GitHub Flavored Markdown
+                    breaks: true, // Add <br> on single line breaks
+                    headerIds: true, // Add IDs to headers
+                    mangle: false, // Don't escape HTML
+                    highlight: function(code, lang) {
+                        // Optional: Add syntax highlighting here
+                        return code;
+                    }
+                });
                 fileContentElement.innerHTML = marked.parse(content);
             } else {
-                // For other files, display as plain text in a pre tag
+                fileContentElement.classList.remove('markdown-body');
                 const pre = document.createElement('pre');
                 pre.textContent = content;
                 fileContentElement.appendChild(pre);
